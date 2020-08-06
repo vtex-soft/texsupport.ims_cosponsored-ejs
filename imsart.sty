@@ -33,7 +33,7 @@
 %% http://www.e-publications.org/ims/support
 %%
 %% This style file contains additional macros and is designed to use
-%% with standart "article.cls"
+%% with standard "article.cls"
 %%
 %% You are free to use this style file as you see fit, provided
 %% that you do not make changes to the file.
@@ -121,11 +121,11 @@
 \newif\if@noundefthanksref
 \DeclareOption{noundefthanksref}{\@noundefthanksreftrue}
 %
-% Load amsmath style with corerect settings:
+% Load amsmath style with correct settings:
 \newif\if@load@amsmath
 \DeclareOption{amsmath}{\@load@amsmathtrue}
 %
-% Load amsthm style with corerect settings:
+% Load amsthm style with correct settings:
 \newif\if@load@amsthm
 \DeclareOption{amsthm}{\@load@amsthmtrue}
 %
@@ -437,7 +437,7 @@
     \addtolength\topmargin{-.5\topmargin}%
     \@settopoint\topmargin
     %
-    % check if tw and th were not alterred
+    % check if tw and th were not altered
     \xdef\imsart@check@textwidth{\the\textwidth}%
     \xdef\imsart@check@textheight{\the\textheight}%
     \AtEndDocument{%
@@ -1276,7 +1276,7 @@
 %
 % FOOTNOTE
 %
-\renewcommand\@makefntext[1]{\parindent12pt\@makefnmark #1}
+\renewcommand\@makefntext[1]{\parindent=12pt\@makefnmark #1}
 %
 \def\@makefnmark{\@textsuperscript{\normalfont\@thefnmark}}
 %
@@ -1903,7 +1903,7 @@
     \def\abstractname@french{R\'esum\'e}%
     \def\abstractname@spanish{Resumen.}%
     \@ifundefined{abstractname@#1}%
-        {\@latex@error{Nera kalbos '#1` palaikymo!}{}}%
+        {\@latex@error{Language '#1` is not supported!}{}}%
         {\edef\abstractname{\csname abstractname@#1\endcsname}}%
     }
 %
@@ -2509,7 +2509,7 @@
         }
     \flushbottom
     %
-\fi % end-balayout
+\fi % end if@balayout
 %
 % Set up parameters for the IMS journals (AOP, AAP, AOS) layout:
 \if@imslayout
@@ -3422,8 +3422,8 @@
     \skip\@mpfootins = \skip\footins
     %
     \marginparpush=5pt
-    \marginparwidth120pt
-    \marginparsep25pt
+    \marginparwidth=120pt
+    \marginparsep=25pt
     %
     \setlength\smallskipamount{6.5\p@ \@plus 1\p@ \@minus 1\p@}
     \setlength\medskipamount{13\p@ \@plus 3\p@ \@minus 3\p@}
@@ -4290,7 +4290,7 @@
     \csname common@pub@types@hook\endcsname
     }
 %
-% default stiliai
+% default styles
 %
 \setpkgattr{bauthor}{style}{\scshape}
 \setpkgattr{beditor}{style}{\scshape}
@@ -4741,7 +4741,7 @@
     %
 \fi
 %
-% INICIALIZATION
+% INITIALIZATION
 %
 % Read local configuration file (if exist):
 % imsart.cnf imsart-ps.cnf imsart-lnms.cnf

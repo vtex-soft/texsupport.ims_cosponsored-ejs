@@ -32,7 +32,7 @@
 %% The original distribution is located at:
 %% http://www.e-publications.org/ims/support
 %%
-%% This class file loads standart "article.cls" with appropriate 
+%% This class file loads standard "article.cls" with appropriate 
 %% settings and then style file "imsart.sty" with additional macros
 %%
 %% You are free to use this style file as you see fit, provided 
