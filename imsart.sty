@@ -67,7 +67,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2020/08/04}
+\def\imsfmt@version{2020/08/06}
 %
 \ProvidesFile{imsart.sty}
         [\imsfmt@version\space IMS article style (VS)]
@@ -144,21 +144,26 @@
 % enable writing to .aux
 %
 \newif\if@supertoc \@supertocfalse
+\newif\if@changetoc \@changetocfalse
+%
+\newif\if@updated@thanksref \@updated@thanksreffalse
 %
 % Information about journals
+%
+\def\set@generic{\def\@tempa{-generic}\ifx\journal@id\@tempa\let\affiliation\@gobble\fi}
+\AtEndOfPackage{\set@generic}
 %
 \DeclareOption{ba}{%
     \def\journal@id{-ba}%
     \def\journal@name{Bayesian Analysis}%
     \def\journal@issn@print{1936-0975}%
     \def\journal@issn@electronic{1931-6690}%
-    \def\journal@url{https://bayesian.org}%
+    \def\journal@url{https://bayesian.org/resources/bayesian-analysis/}%
     \@balayouttrue
     \@noundefthanksreftrue
+    \@updated@thanksreftrue
     \@addressasfootnotetrue
     }
-%
-\newif\if@imscosponsoredlayout \@imscosponsoredlayoutfalse
 %
 \DeclareOption{ps}{%
     \def\journal@id{-ps}%
@@ -166,7 +171,6 @@
     \def\journal@issn{ISSN: 1549-5787}%
     \def\journal@url{https://imstat.org/journals-and-publications/probability-surveys/}%
     \AtEndOfPackage{\let\affiliation\@gobble}%
-    \@imscosponsoredlayouttrue
     }
 %
 % Information about journals
@@ -176,7 +180,6 @@
     \def\journal@issn{ISSN: 1935-7516}%
     \def\journal@url{https://imstat.org/journals-and-publications/statistics-surveys/}%
     \AtEndOfPackage{\let\affiliation\@gobble}%
-    \@imscosponsoredlayouttrue
     }
 %
 % Information about journals
@@ -186,7 +189,6 @@
     \def\journal@issn{ISSN: 1935-7524}%
     \def\journal@url{https://imstat.org/journals-and-publications/electronic-journal-of-statistics/}%
     \AtEndOfPackage{\let\affiliation\@gobble}%
-    \@imscosponsoredlayouttrue
     }
 %
 \DeclareOption{lnms}{%
@@ -246,6 +248,7 @@
     \@imslayouttrue
     \@autosecdottrue
     \@print@bid@doitrue
+    \@updated@thanksreftrue
 }
 %
 \DeclareOption{aop}{%
@@ -261,6 +264,7 @@
     \@imslayouttrue
     \@autosecdottrue
     \@print@bid@doitrue
+    \@updated@thanksreftrue
     }
 %
 \DeclareOption{aos}{%
@@ -276,6 +280,7 @@
     \@imslayouttrue
     \@autosecdottrue
     \@print@bid@doitrue
+    \@updated@thanksreftrue
     }
 %
 \DeclareOption{aoas}{%
@@ -291,6 +296,7 @@
     \@imslayouttrue
     \@autosecdottrue
     \@print@bid@doitrue
+    \@updated@thanksreftrue
     }
 %
 \DeclareOption{sts}{%
@@ -313,6 +319,7 @@
     \@twosidetrue
     \@bjlayouttrue
     \AtEndOfPackage{\let\affiliation\@gobble}%
+    \@updated@thanksreftrue
     }
 %
 \DeclareOption{aihp}{%
@@ -324,6 +331,7 @@
     \@twosidetrue
     \@aihplayouttrue
     \AtEndOfPackage{\let\affiliation\@gobble}%
+    \@updated@thanksreftrue
 }
 %
 \DeclareOption{bjps}{%
@@ -336,6 +344,7 @@
     \@keywordsasfootnotetrue
     \@addressatendtrue
     \@bjpslayouttrue
+    \@updated@thanksreftrue
     }
 %
 %% Layouts:
@@ -403,7 +412,7 @@
 \def\journal@name{}
 \def\journal@url{}
 \def\journal@issn{}
-\def\journal@id{}
+\def\journal@id{-generic}
 \def\paper@url{}
 \def\info@line{}
 \def\copyrightowner@text{}
@@ -799,19 +808,15 @@
 %
 \if@old@layout
 \else
-    \if@imscosponsoredlayout
-    \else
-        \if@stslayout
-        \else
-            \setvaluelist{emailmarks}{*,\textdagger,\textdaggerdbl,%
-                \textsection,\textparagraph,||,**,\textdagger\textdagger,%
-                \textdaggerdbl\textdaggerdbl
-                }
-            \define@key{ead}{mark}[true]{%
-                \csxdef{ead@\ead@label @mark}{\the\c@author}%
-                \csxdef{author@\the\c@author @ead@mark}{\ead@label}%
-                }
-        \fi
+    \if@updated@thanksref
+        \setvaluelist{emailmarks}{*,\textdagger,\textdaggerdbl,%
+            \textsection,\textparagraph,||,**,\textdagger\textdagger,%
+            \textdaggerdbl\textdaggerdbl
+            }
+        \define@key{ead}{mark}[true]{%
+            \csxdef{ead@\ead@label @mark}{\the\c@author}%
+            \csxdef{author@\the\c@author @ead@mark}{\ead@label}%
+            }
     \fi
 \fi
 %
@@ -1216,62 +1221,12 @@
     \setpkgattr{figurename}{skip}{\enskip}
     \def\figurename{Figure}
     \setpkgattr{tablecaption}{shape}{}
-    %
-    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
-    %
-    % For floats on a separate float page or column:
-    \setlength\@fptop{0\p@ \@plus 1fil}
-    \setlength\@fpsep{8\p@ \@plus 1000fil}
-    \setlength\@fpbot{0\p@ \@plus 1fil}
-    \setlength\@dblfptop{0\p@ \@plus 1fil}
-    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
-    \setlength\@dblfpbot{0\p@ \@plus 1fil}
-    % Float counters:
-    \setcounter{topnumber}{5}
-    \renewcommand\topfraction{.99}
-    \setcounter{bottomnumber}{5}
-    \renewcommand\bottomfraction{.99}
-    \setcounter{totalnumber}{10}
-    \renewcommand\textfraction{.05}
-    \renewcommand\floatpagefraction{.9}
-    \setcounter{dbltopnumber}{5}
-    \renewcommand\dbltopfraction{.99}
-    \renewcommand\dblfloatpagefraction{.8}
-    %
 \fi
 %
 \if@stslayout
     \let\savehline\hline
     \def\thline{\noalign{\vskip3pt}\savehline\noalign{\vskip4pt}}%
     \setpkgattr{starttable}{hook}{\let\hline\thline}
-    % float parameters
-    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
-    % for floats on a separate float page or column:
-    \setlength\@fptop{0\p@ \@plus 1fil}
-    \setlength\@fpsep{8\p@ \@plus 1000fil}
-    \setlength\@fpbot{0\p@ \@plus 1fil}
-    \setlength\@dblfptop{0\p@ \@plus 1fil}
-    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
-    \setlength\@dblfpbot{0\p@ \@plus 1fil}
-    % float counters:
-    \setcounter{topnumber}{5}
-    \renewcommand\topfraction{.99}
-    \setcounter{bottomnumber}{5}
-    \renewcommand\bottomfraction{.99}
-    \setcounter{totalnumber}{10}
-    \renewcommand\textfraction{.05}
-    \renewcommand\floatpagefraction{.9}
-    \setcounter{dbltopnumber}{5}
-    \renewcommand\dbltopfraction{.99}
-    \renewcommand\dblfloatpagefraction{.8}
 \fi
 %
 % FOOTNOTE
@@ -1731,50 +1686,46 @@
         \def\snm##1{\snm@size{##1}}%
         \if@old@layout
         \else
-            \if@imscosponsoredlayout
-            \else
-                \if@stslayout
-                \else
-                    \def\thanksref##1{%
-                        \edef\author@direct@thanksref{##1}%
-                        \def\thanksref{\@latex@error{only one \string\thanksref\space
-                            is allowed inside \string\author}{??}}%
-                        }%
-                \fi
+            \if@updated@thanksref
+                \def\thanksref##1{%
+                    \edef\author@direct@thanksref{##1}%
+                    \def\thanksref{\@latex@error{only one \string\thanksref\space
+                        is allowed inside \string\author}{??}}%
+                    }%
             \fi
         \fi
         \noindent#2%
         \if@old@layout
             \thanksref{#1}%
         \else
-            \if@imscosponsoredlayout
-                \thanksref{#1}%
+            \if@updated@thanksref
+                \ifx.#1.%
+                    \let\tmp@author@thanksrefs\@empty
+                    \edef\tmp@sep{}%
+                \else
+                    \appto\tmp@author@thanksrefs{#1}%
+                    \edef\tmp@sep{,}%
+                \fi
+                \@ifundefined{author@direct@thanksref}%
+                    {}%
+                    {%
+                        \eappto\tmp@author@thanksrefs{\tmp@sep\author@direct@thanksref}%
+                        \edef\tmp@sep{,}%
+                    }%
+                \@ifundefined{author@\the\c@author @ead@mark}%
+                    {}%
+                    {%
+                        \eappto\tmp@author@thanksrefs
+                            {\tmp@sep\csname author@\the\c@author @ead@mark\endcsname}%
+                    }%
+                \ifx\tmp@author@thanksrefs\@empty
+                \else
+                    \expandafter\orig@thanksref\expandafter{\tmp@author@thanksrefs}%
+                \fi
             \else
                 \if@stslayout
                 \else
-                    \ifx.#1.%
-                        \let\tmp@author@thanksrefs\@empty
-                        \edef\tmp@sep{}%
-                    \else
-                        \appto\tmp@author@thanksrefs{#1}%
-                        \edef\tmp@sep{,}%
-                    \fi
-                    \@ifundefined{author@direct@thanksref}%
-                        {}%
-                        {%
-                            \eappto\tmp@author@thanksrefs{\tmp@sep\author@direct@thanksref}%
-                            \edef\tmp@sep{,}%
-                        }%
-                    \@ifundefined{author@\the\c@author @ead@mark}%
-                        {}%
-                        {%
-                            \eappto\tmp@author@thanksrefs
-                                {\tmp@sep\csname author@\the\c@author @ead@mark\endcsname}%
-                        }%
-                    \ifx\tmp@author@thanksrefs\@empty
-                    \else
-                        \expandafter\orig@thanksref\expandafter{\tmp@author@thanksrefs}%
-                    \fi
+                    \thanksref{#1}%
                 \fi
             \fi
         \fi
@@ -2225,6 +2176,38 @@
     \DeclareMathSizes{24.88}{24.88}{17.28}{12}%
     }
 %
+\def\ims@common@float@settings{%
+    % float parameters:
+    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
+    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
+    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
+    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
+    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
+    % For floats on a separate float page or column:
+    \setlength\@fptop{0\p@ \@plus 1fil}
+    \setlength\@fpsep{8\p@ \@plus 1000fil}
+    \setlength\@fpbot{0\p@ \@plus 1fil}
+    \setlength\@dblfptop{0\p@ \@plus 1fil}
+    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
+    \setlength\@dblfpbot{0\p@ \@plus 1fil}
+    % float counters:
+    \setcounter{topnumber}{5}
+    \renewcommand\topfraction{.99}
+    \setcounter{bottomnumber}{5}
+    \renewcommand\bottomfraction{.99}
+    \setcounter{totalnumber}{10}
+    \renewcommand\textfraction{.05}
+    \renewcommand\floatpagefraction{.9}
+    \setcounter{dbltopnumber}{5}
+    \renewcommand\dbltopfraction{.99}
+    \renewcommand\dblfloatpagefraction{.8}
+    }
+%
+\def\set@amsgen@frenchspacing{%
+    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
+        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }%
+    }
+%
 % Set up parameters for the BA journal layout:
 \if@balayout
     \RequirePackage{fix-cm}
@@ -2253,6 +2236,8 @@
     %
     \setpkgattr{abstract}{size}{\small\upshape\mdseries}
     \setpkgattr{keyword}{size}{\small\upshape\mdseries\rightskip=\the\rightskip plus1.0fil}
+    % MSC not changed to 2020 in BA yet
+    \setpkgattr{keyword}{MSC}{MSC 2010 subject classifications:}
     %
     \setpkgattr{ead}{size}{\upshape}
     \setpkgattr{abstract}{skip}{22\p@}
@@ -2715,9 +2700,6 @@
         \setlength\marginparwidth{120\p@}
     \fi
     %
-    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
-        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
-    %
     \AtEndOfPackage{%
         \appto\set@natbib{%
             \let\save@NAT@bibsetnum\NAT@bibsetnum
@@ -2800,26 +2782,9 @@
     \setlength{\skip\footins}{18\p@ \@plus 4\p@ \@minus 2\p@}
     \skip\@mpfootins = \skip\footins
     %
-    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
+    \set@amsgen@frenchspacing
     %
-    \setlength\@fpsep{8\p@ \@plus 1000fil}
-    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
-    %
-    % Float counters:
-    \setcounter{topnumber}{5}
-    \renewcommand\topfraction{.99}
-    \setcounter{bottomnumber}{5}
-    \renewcommand\bottomfraction{.99}
-    \setcounter{totalnumber}{10}
-    \renewcommand\textfraction{.05}
-    \renewcommand\floatpagefraction{.9}
-    \setcounter{dbltopnumber}{5}
-    \renewcommand\dbltopfraction{.99}
-    \renewcommand\dblfloatpagefraction{.8}
+    \ims@common@float@settings
 \fi
 %
 % Set up parameters for the STS journal layout:
@@ -2877,8 +2842,6 @@
     \emergencystretch=3\p@
     \hbadness=800
     \tolerance=800
-    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
-        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
     %
     \setlength\smallskipamount{6.5\p@ \@plus 1\p@ \@minus 1\p@}
     \setlength\medskipamount{13\p@ \@plus 3\p@ \@minus 3\p@}
@@ -3032,7 +2995,10 @@
             }%
         }
     \let\endlonglist =\endlist
-%
+    %
+    \set@amsgen@frenchspacing
+    %
+    \ims@common@float@settings
 \fi
 %
 % Set up parameters for the BJ journal layout:
@@ -3192,24 +3158,6 @@
     \setlength\thinmuskip{2.5mu}
     \setlength\tabbingsep{6\p@}
     %
-    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
-    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\@fpsep{8\p@ \@plus 1000fil}
-    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setcounter{bottomnumber}{5}
-    \setcounter{dbltopnumber}{5}
-    \setcounter{topnumber}{5}
-    \setcounter{totalnumber}{10}
-    \renewcommand\bottomfraction{.99}
-    \renewcommand\dbltopfraction{.99}
-    \renewcommand\dblfloatpagefraction{.8}
-    \renewcommand\floatpagefraction{.9}
-    \renewcommand\textfraction{.05}
-    \renewcommand\topfraction{.99}
-    %
     \let\footnoterule\relax
     \setlength\footnotesep{7\p@}
     \setlength{\skip\footins}{18\p@ \@plus 4\p@ \@minus 2\p@}
@@ -3220,8 +3168,9 @@
     \tolerance=800
     \widowpenalty=10000
     %
-    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
-        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
+    \set@amsgen@frenchspacing
+    %
+    \ims@common@float@settings
 \fi
 %
 % Set up parameters for the AIHP journal layout:
@@ -3342,25 +3291,6 @@
     \setlength\marginparsep{25\p@}
     \setlength\marginparwidth{120\p@}
     %
-    % Float counters
-    \setlength\dblfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\dbltextfloatsep{24\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\floatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\intextsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\textfloatsep{18\p@ \@plus 6\p@ \@minus 2\p@}
-    \setlength\@fpsep{8\p@ \@plus 1000fil}
-    \setlength\@dblfpsep{8\p@ \@plus 1000fil}
-    \setcounter{bottomnumber}{5}
-    \setcounter{dbltopnumber}{5}
-    \setcounter{topnumber}{5}
-    \setcounter{totalnumber}{10}
-    \renewcommand\bottomfraction{.99}
-    \renewcommand\dbltopfraction{.99}
-    \renewcommand\dblfloatpagefraction{.8}
-    \renewcommand\floatpagefraction{.9}
-    \renewcommand\textfraction{.05}
-    \renewcommand\topfraction{.99}
-    %
     % PAGE-BREAKING PENALTIES
     \clubpenalty=10000
     \widowpenalty=10000
@@ -3369,8 +3299,9 @@
     \tolerance=800
     \AtBeginDocument{\interdisplaylinepenalty=100}
     %
-    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
-        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
+    \set@amsgen@frenchspacing
+    %
+    \ims@common@float@settings
 \fi
 %
 % Set up parameters for the BJPS journal layout:
@@ -3450,9 +3381,6 @@
     \setlength\medmuskip{3.5mu plus 1.5mu minus 2mu}
     \setlength\thickmuskip{3.75mu plus 1.5mu}
     %
-    \def\frenchspacing{\sfcode`\.1006\sfcode`\?1005\sfcode`\!1004%
-        \sfcode`\:1003\sfcode`\;1002\sfcode`\,1001 }
-    %
     \setpkgattr{keyword}{AMS}{AMS 2000 subject classifications.}
     \setpkgattr{keyword}{KWD}{Keywords and phrases.}
     \setpkgattr{keyword}{MSC}{\ims@href{\msc@url}{MSC2020 subject classifications}.}
@@ -3501,6 +3429,10 @@
         \advance\labelwidth by -\labelsep
         \topsep=\z@
         }%
+    %
+    \set@amsgen@frenchspacing
+    %
+    \ims@common@float@settings
 \fi
 %
 % smart \MR
@@ -4670,7 +4602,6 @@
 \newcommand*\l@begintocitem[2]{}
 \newcommand*\l@endtocitem[2]{}
 %
-\newif\if@changetoc \@changetocfalse
 \@ifclassloaded{article}{\@changetoctrue}{}
 %
 \if@changetoc
