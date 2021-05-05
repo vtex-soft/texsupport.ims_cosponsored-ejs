@@ -23,9 +23,8 @@
 \begin{document}
 
 \begin{frontmatter}
-\title{A Sample Document\thanksref{T1}}
+\title{A Sample Document\support{Support information of the article.}}
 \runtitle{A Sample Document}
-\thankstext{T1}{Footnote to the title with the `thankstext' command.}
 
 \begin{aug}
 \author{\fnms{First} \snm{Author}\thanksref{t1,t2}\ead[label=e1]{first@somewhere.com}}
@@ -464,10 +463,11 @@ and denote it by
 
 Sample of cross-reference to the formula \ref{path} in Appendix \ref{app}.
 
-\section*{Acknowledgements}
+\begin{acks}[Acknowledgments]
 And this is an acknowledgements section with a heading that was produced by the
 $\backslash$section* command. Thank you all for helping me writing this
 \LaTeX\ sample file.
+\end{acks}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Supplementary Material, if any, should   %%
