@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2022/11/29}
+\def\imsfmt@version{2023/02/22}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -3335,13 +3335,27 @@
 % Set up parameters for the BJ journal layout:
 %
 \if@bjlayout
+    \IfFileExists{newtxmath.sty}%
+        {\edef\new@tx@math@sty@exists{1}}%
+        {}
     \RequirePackage[T1]{fontenc}
-    \RequirePackage{textcomp}
     \def\rmdefault{utm}
+    \ifdefined\new@tx@math@sty@exists
+        \def\ttdefault{ucr}
+    \else
+        \def\ttdefault{pcr}% ucr in old systems are somewhat buggy
+    \fi
     \RequirePackage[scaled=0.9]{helvet}
-    \def\ttdefault{ucr}
-    \ifdefined\HCode\else
-        \RequirePackage[cmintegrals,bigdelims]{newtxmath}
+    \RequirePackage{textcomp}
+    \ifdefined\HCode
+    \else
+        \ifdefined\new@tx@math@sty@exists
+            \RequirePackage[cmintegrals,bigdelims]{newtxmath}
+        \else
+            \PackageWarning{imsart}{newtxmath package isn't available, 
+                amsmath is used instead}%
+            \RequirePackage{amsmath}
+        \fi
     \fi
     \let\openbox\relax
     \RequirePackage{graphicx}%
@@ -3921,7 +3935,7 @@
 %
 % this splits MR... (...)
 \def\@MR#1 #2\relax#3{%
-    \href{https://www.ams.org/mathscinet-getitem?mr=#1}%
+    \href{https://mathscinet.ams.org/mathscinet-getitem?mr=#1}%
     {\MRfixed{#3}}%
     }%
 %
@@ -3959,8 +3973,6 @@
     \@ifundefined{user@hy@subject}{}{\global\let\@pdfsubject\user@hy@subject}%
     \@ifundefined{user@hy@keywords}{}{\global\let\@pdfkeywords\user@hy@keywords}%
     %
-    % MathSciNet:
-    % \def\MR##1{\href{https://www.ams.org/mathscinet-getitem?mr=##1}{MR##1}}
     % MR with hyperef
     \def\MR##1{\@MR##1 \relax{##1}}%
     }
