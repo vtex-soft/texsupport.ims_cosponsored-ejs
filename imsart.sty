@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2023/05/19}
+\def\imsfmt@version{2023/10/04}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -195,6 +195,7 @@
     \def\journal@issn{ISSN: 1549-5787}%
     \def\journal@url{https://imstat.org/journals-and-publications/probability-surveys/}%
     \@ejs@ps@ss@layouttrue
+    \@print@bid@doitrue
     }
 %
 % Information about journals
@@ -204,6 +205,7 @@
     \def\journal@issn{ISSN: 1935-7516}%
     \def\journal@url{https://imstat.org/journals-and-publications/statistics-surveys/}%
     \@ejs@ps@ss@layouttrue
+    \@print@bid@doitrue
     }
 %
 % Information about journals
@@ -213,6 +215,7 @@
     \def\journal@issn{ISSN: 1935-7524}%
     \def\journal@url{https://imstat.org/journals-and-publications/electronic-journal-of-statistics/}%
     \@ejs@ps@ss@layouttrue
+    \@print@bid@doitrue
     }
 %
 % Options for the IMS journals:
@@ -3974,7 +3977,10 @@
     \def\MR##1{\@MR##1 \relax{##1}}%
     %
     \if@print@bid@doi
-        \urlstyle{rm}%
+        \if@ejs@ps@ss@layout
+        \else
+            \urlstyle{rm}%
+        \fi
         \let\ims@nolinkurl\nolinkurl
     \fi
     }
