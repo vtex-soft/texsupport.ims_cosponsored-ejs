@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2023/10/04}
+\def\imsfmt@version{2023/10/10}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -196,6 +196,7 @@
     \def\journal@url{https://imstat.org/journals-and-publications/probability-surveys/}%
     \@ejs@ps@ss@layouttrue
     \@print@bid@doitrue
+    \@imsart@showframetrue
     }
 %
 % Information about journals
@@ -206,6 +207,7 @@
     \def\journal@url{https://imstat.org/journals-and-publications/statistics-surveys/}%
     \@ejs@ps@ss@layouttrue
     \@print@bid@doitrue
+    \@imsart@showframetrue
     }
 %
 % Information about journals
@@ -216,6 +218,7 @@
     \def\journal@url{https://imstat.org/journals-and-publications/electronic-journal-of-statistics/}%
     \@ejs@ps@ss@layouttrue
     \@print@bid@doitrue
+    \@imsart@showframetrue
     }
 %
 % Options for the IMS journals:
@@ -5301,7 +5304,10 @@
         \definecolor{imsgray}{gray}{0.5}%
         }%
     %
-    \overfullrule5\p@
+    \if@ejs@ps@ss@layout
+    \else
+        \overfullrule=5\p@
+    \fi
     \setpkgattr{showframe}{rulecolor}{imsgray}
     \setpkgattr{showframe}{rulewidth}{.05pt}
     %

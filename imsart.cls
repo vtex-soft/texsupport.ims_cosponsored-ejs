@@ -66,7 +66,7 @@
 % Requires Latex2e, ver.2000.06
 % 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{imsart}[2023/10/04 driver class for package imsart.sty]
+\ProvidesClass{imsart}[2023/10/10 driver class for package imsart.sty]
 % 
 % set various options for different journals:
 \DeclareOption{ps}{%
