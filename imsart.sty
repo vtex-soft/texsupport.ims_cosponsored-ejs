@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2023/10/10}
+\def\imsfmt@version{2023/11/24}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -406,6 +406,10 @@
 \DeclareOption{showframe}{\@imsart@showframetrue}
 \DeclareOption{noshowframe}{\@imsart@showframefalse}
 %
+% twoside (to catch direct use)
+\newif\if@imsart@twoside \@imsart@twosidefalse
+\DeclareOption{twoside}{\global\@imsart@twosidetrue}
+%
 % Combined options:
 %
 % Use this option for submission for pier review:
@@ -532,6 +536,17 @@
 \setlength\smallskipamount{6\p@ \@plus 1\p@ \@minus 1\p@}
 \setlength\medskipamount{12\p@ \@plus 3\p@ \@minus 3\p@}
 \setlength\bigskipamount{18\p@ \@plus 3\p@ \@minus 3\p@}
+% 
+\if@imsart@twoside
+\else
+    \if@ejs@ps@ss@layout
+        % it's twoside but centered
+        \advance\evensidemargin by \oddsidemargin
+        \divide\evensidemargin by \tw@
+        \oddsidemargin=\evensidemargin
+        \marginparwidth=65\p@% as in article with oneside
+    \fi
+\fi
 %
 % setpkgattr, getpkgattr, do@option@list
 %
@@ -2297,17 +2312,11 @@
 %
 % \kwd[; ]{foo}
 \def\sep{\unskip\string, }
-\newif\if@firstkeywordinlist \@firstkeywordinlisttrue
 %
 \DeclareRobustCommand*\kwd{\@ifnextchar[\@kwd{\@kwd[\kwd@sep]}}
 \def\@kwd[#1]#2{%
     \unskip#1{#2}%
-    \if@firstkeywordinlist
-        \addto@keywords@list{#2}%
-        \@firstkeywordinlistfalse
-    \else
-        \addto@keywords@list{, #2}%
-    \fi
+    \addto@keywords@list{#2}%
     \let\kwd@sep\sep
     }
 %
@@ -4000,10 +4009,12 @@
     }
 %
 \newtoks\keywords@list
+\let\keywords@list@sep\@empty
 \def\addto@keywords@list#1{%
     \begingroup
         \no@harm
-        \xdef\@act{\global\noexpand\keywords@list{\the\keywords@list#1}}\@act
+        \xdef\@act{\global\noexpand\keywords@list{\the\keywords@list\keywords@list@sep#1}}\@act
+        \xdef\keywords@list@sep{, }%
     \endgroup
     }
 %
