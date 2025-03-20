@@ -2593,7 +2593,7 @@
 \if@ejs@ps@ss@layout
     \RequirePackage{lmodern}
     \usepackage[T1]{fontenc}
-    \UseLegacyTextSymbols% for text bullets, etc.
+    \csname UseLegacyTextSymbols\endcsname% for text bullets, etc.
     \AtEndOfPackage{%
         \ifcsundef{do@not@scale@lmex}%
             {% make lmex10 scalable
@@ -2612,9 +2612,6 @@
     \def\@xviiipt{18}
     \def\@xxpt{20}
     \def\@xxivpt{24}
-    \IfFileExists{newtxmath.sty}%
-        {\edef\new@tx@math@sty@exists{1}}%
-        {}
     \RequirePackage[T1]{fontenc}
     \def\rmdefault{utm}
     \RequirePackage{nimbusmono}
@@ -2622,13 +2619,22 @@
     \RequirePackage{textcomp}
     \ifdefined\HCode
     \else
-        \ifdefined\new@tx@math@sty@exists
-            \RequirePackage[amsthm]{newtxmath}
-        \else
-            \PackageWarning{imsart}{newtxmath package isn't available, 
-                amsmath is used instead}%
-            \RequirePackage{amsmath}
-        \fi
+        \IfFileExists{newtxmath.sty}%
+            {%
+                \ifdefined\DocumentMetadata% >=2022
+                \wlog{aaa:>=2022}%
+                    \RequirePackage[amsthm]{newtxmath}
+                \else
+                \wlog{aaa:<2022}%
+                    \RequirePackage{amsthm}%
+                    \RequirePackage{newtxmath}%
+                \fi 
+            }%
+            {%
+                \PackageWarning{imsart}{newtxmath package isn't available, 
+                    amsmath is used instead}%
+                \RequirePackage{amsthm,amsmath}
+            }%
     \fi
     \let\openbox\relax
     \declaremathsizes@as@in@mathtime

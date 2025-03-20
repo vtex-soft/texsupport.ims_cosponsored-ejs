@@ -32,7 +32,7 @@ LaTeX author support files for IMS co-sponsored journal:
 
 -   To remove frame from the text box use document class option `noshowframe`, e.g:
 
-        \documentclass[ejs,noshowframe]{imsart}
+        \documentclass[ejsv2,noshowframe]{imsart}
 
 ## BUG REPORTS
 
