@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2025/03/18}
+\def\imsfmt@version{2025/03/20}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -2622,10 +2622,8 @@
         \IfFileExists{newtxmath.sty}%
             {%
                 \ifdefined\DocumentMetadata% >=2022
-                \wlog{aaa:>=2022}%
-                    \RequirePackage[amsthm]{newtxmath}
+                    \RequirePackage[amsthm]{newtxmath}%
                 \else
-                \wlog{aaa:<2022}%
                     \RequirePackage{amsthm}%
                     \RequirePackage{newtxmath}%
                 \fi 
@@ -2633,7 +2631,7 @@
             {%
                 \PackageWarning{imsart}{newtxmath package isn't available, 
                     amsmath is used instead}%
-                \RequirePackage{amsthm,amsmath}
+                \RequirePackage{amsthm,amsmath}%
             }%
     \fi
     \let\openbox\relax
