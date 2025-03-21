@@ -5,6 +5,16 @@
 LaTeX author support files for IMS co-sponsored journal: 
 [Electronic Journal of Statistics (EJS)](https://imstat.org/journals-and-publications/electronic-journal-of-statistics/)
 
+## NOTE ON NEW VERSION (v2) – March 20, 2025
+
+As of 2025-03-20, the class file has been updated:
+
+-   Margins have been reduced.
+-   The document class option changed from `ejs` to `ejsv2`.
+
+While `ejs` still works for backward compatibility, it is now considered legacy and may be removed in future versions. 
+New documents should use `ejsv2`.
+
 ## FILE LIST
 
 -   `ejs-sample.tex` - sample article for EJS (source file)
