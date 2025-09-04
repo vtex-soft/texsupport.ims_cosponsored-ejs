@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2025/05/30}
+\def\imsfmt@version{2025/09/03}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -172,6 +172,9 @@
 % for new thanksref syntax
 \newif\if@updated@thanksref \@updated@thanksreffalse
 %
+% error message if xr or xr-hyper packages are loaded
+\newif\if@load@xr@or@xr@hyper \@load@xr@or@xr@hyperfalse
+%
 % Information about journals
 %
 \def\set@generic{\def\@tempa{-generic}}
@@ -248,6 +251,8 @@
     \@autosecdottrue
     \@print@bid@doitrue
     \@updated@thanksreftrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     }
 %
 \DeclareOption{aop}{%
@@ -264,6 +269,8 @@
     \@autosecdottrue
     \@print@bid@doitrue
     \@updated@thanksreftrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     }
 %
 \DeclareOption{aos}{%
@@ -280,6 +287,8 @@
     \@autosecdottrue
     \@print@bid@doitrue
     \@updated@thanksreftrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     }
 %
 \DeclareOption{aoas}{%
@@ -296,6 +305,8 @@
     \@autosecdottrue
     \@print@bid@doitrue
     \@updated@thanksreftrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     \AtBeginDocument{%
         \@ifpackagewith{natbib}{numbers}{%
             \@latex@error{Only author-year citations are allowed!
@@ -315,6 +326,8 @@
     \@stslayouttrue
     \@twocolumntrue
     \@print@bid@doitrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     \AtEndPreamble{\if@twocolumn\set@page@layout{528.62625pt}{702.75pt}\fi}%
     }
 %
@@ -333,6 +346,7 @@
     \@load@amsmathtrue
     \@load@natbibtrue
     \@imsart@showframetrue
+    \@load@xr@or@xr@hypertrue
     }
 %
 \DeclareOption{aihp}{%
@@ -347,6 +361,8 @@
     \@aihplayouttrue
     \@updated@thanksreftrue
     \@print@bid@doitrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     \AtBeginDocument{%
         \@ifpackagewith{natbib}{authoryear}{%
             \@latex@error{Only numerical citations are allowed!
@@ -366,6 +382,8 @@
     \@bjpslayouttrue
     \@updated@thanksreftrue
     \@print@bid@doitrue
+    \@load@amsthmtrue
+    \@load@xr@or@xr@hypertrue
     \AtBeginDocument{%
         \@ifpackagewith{natbib}{numbers}{%
             \@latex@error{Only author-year citations are allowed!
@@ -1831,7 +1849,7 @@
     }
 \setpkgattr{copyright}{owner}{$\copyright$~\@copyrightyear \copyrightowner@text}
 \ifdefined\HCode
-\def\copyright@owner@prefix{Copyright }
+    \def\copyright@owner@prefix{Copyright }
 \fi
 \setpkgattr{author}{prefix}{}
 \setpkgattr{keyword}{postfix}{\unskip.}
@@ -2598,12 +2616,15 @@
             \RequirePackage{nimbusmono}%
             \RequirePackage[scaled=0.9]{nimbussans}%
             \ifnum\jobstart@date@info>20250531
-                \RequirePackage{nimbusserif}%
-                \AtEndOfClass{%
-                    \DeclareFontShape{T1}{NimbusSerif}{m}{sc}{<-> utmrc8t}{}%
-                    \DeclareFontShape{T1}{NimbusSerif}{b}{sc}{<-> utmbc8t}{}%
-                    \DeclareFontShape{T1}{NimbusSerif}{bx}{sc}{<->ssub * NimbusSerif/b/sc}{}%
-                    }%
+                \ifdefined\HCode
+                \else
+                    \RequirePackage{nimbusserif}%
+                    \AtEndOfClass{%
+                        \DeclareFontShape{T1}{NimbusSerif}{m}{sc}{<-> utmrc8t}{}%
+                        \DeclareFontShape{T1}{NimbusSerif}{b}{sc}{<-> utmbc8t}{}%
+                        \DeclareFontShape{T1}{NimbusSerif}{bx}{sc}{<->ssub * NimbusSerif/b/sc}{}%
+                        }%
+                \fi
             \else
                 \def\rmdefault{utm}%
                 \def\familydefault{\rmdefault}%
@@ -4661,6 +4682,20 @@
         \everydisplay=\expandafter{\the\everydisplay\set@pre@matrix@hook}%
     \fi
 \fi
+\ifnum\jobstart@date@info>20250824\relax
+    \ifdefined\noaccents@
+        \noaccents@
+    \fi
+\fi
+\ifnum\jobstart@date@info>20250903\relax
+    \if@ejs@ps@ss@layout
+        \AtBeginDocument{%
+            \ifdefined\noaccents@
+                \noaccents@
+            \fi
+            }
+    \fi
+\fi
 %
 \if@imsart@seceqn
     \renewcommand{\theequation}{\thesection.\arabic{equation}}
@@ -5490,6 +5525,30 @@
     %
     \AtBeginDocument{\set@showframe@box}
     %
+\fi
+%
+\if@load@xr@or@xr@hyper
+    \def\@load@xr@or@xr@hyper@error@message@text{%
+        Please do not use the 'xr' or 'xr-hyper' package.^^J%
+        External references are not supported in our workflow.^^J%
+        Replace all references to external documents with plain text%
+        }
+    \AtBeginDocument{%
+        \@ifpackageloaded{xr}%
+            {%
+                \@latex@error{%
+                    \@load@xr@or@xr@hyper@error@message@text
+                    }{}%
+            }%
+            {}%
+        \@ifpackageloaded{xr-hyper}%
+            {%
+                \@latex@error{%
+                    \@load@xr@or@xr@hyper@error@message@text
+                    }{}%
+            }%
+            {}%
+        }
 \fi
 %
 % INITIALIZATION
