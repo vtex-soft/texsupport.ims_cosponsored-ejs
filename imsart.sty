@@ -65,7 +65,7 @@
 % Requires Latex2e, ver.2000.06
 %
 \def\imsfmt@name{imsart}
-\def\imsfmt@version{2026/03/10}
+\def\imsfmt@version{2026/05/15}
 %
 \ProvidesFile{imsart.sty}[\imsfmt@version\space IMS article style]
 %
@@ -2347,6 +2347,25 @@
 % \keyword@class -> KWD
 % \keyword@KWD -> AMS 2000...
 %
+\ifnum\jobstart@date@info>20260428\relax
+    \setpkgattr{kwdgroup}{primary}{%
+        \let\kwd@sep\relax
+        \unskip Primary\ 
+        }
+    \setpkgattr{kwdgroup}{secondary}{%
+        \let\kwd@sep\relax
+        \unskip; secondary\ 
+        }
+    \define@key{kwdgroup}{type}{\edef\kwdgroup@@type{#1}}
+    \def\kwdgroup{\@ifnextchar[{\@kwdgroup}{\@kwdgroup[]}}
+    \def\@kwdgroup[#1]#2{%
+        \setkeys{kwdgroup}{#1}%
+        \csname kwdgroup@\kwdgroup@@type\endcsname
+        \ignorespaces
+        #2%
+        }
+\fi
+%
 \gdef\keyword{\@ifnextchar[{\@keyword}{\@keyword[class=KWD]}}
 %
 \gdef\@keyword[#1]{%
@@ -2385,12 +2404,21 @@
 % \kwd[; ]{foo}
 \def\sep{\unskip\string, }
 %
-\DeclareRobustCommand*\kwd{\@ifnextchar[\@kwd{\@kwd[\kwd@sep]}}
-\def\@kwd[#1]#2{%
-    \unskip#1{#2}%
-    \addto@keywords@list{#2}%
-    \let\kwd@sep\sep
-    }
+\ifnum\jobstart@date@info>20260428\relax
+    \DeclareRobustCommand*\kwd[1]{%
+        \kwd@sep #1%
+        \addto@keywords@list{#1}%
+        \let\kwd@sep\sep
+        \ignorespaces
+        }
+\else
+    \DeclareRobustCommand*\kwd{\@ifnextchar[\@kwd{\@kwd[\kwd@sep]}}
+    \def\@kwd[#1]#2{%
+        \unskip#1{#2}%
+        \addto@keywords@list{#2}%
+        \let\kwd@sep\sep
+        }
+\fi
 %
 % \maketitle
 % if \frontmatter is not used, we will redefine \maketitle
@@ -2932,7 +2960,10 @@
             }%
         \setpkgattr{email}{text}{}%
         %
-        \appto\set@natbib{\setlength\bibsep{6pt}}%
+        \ifnum\jobstart@date@info>20260326\relax
+        \else
+            \appto\set@natbib{\setlength\bibsep{6pt}}%
+        \fi
         %
         \csdef{copyrightowner@text}{International Society for Bayesian Analysis}%
         \def\journal@issn{$\copyright$~\ims@href{https://www.imstat.org}{\copyrightowner@text}, 
@@ -3040,6 +3071,9 @@
                 \noaccents@
             \fi
             }
+    \fi
+    \ifnum\jobstart@date@info>20260326\relax
+        \setpkgattr{thebibliography}{size}{\small}
     \fi
     %
 \fi % end if@balayout
@@ -5539,13 +5573,13 @@
     %
 \fi
 %
-\if@load@xr@or@xr@hyper
-    \def\@load@xr@or@xr@hyper@error@message@text{%
-        Please do not use the 'xr' or 'xr-hyper' package.^^J%
-        External references are not supported in our workflow.^^J%
-        Replace all references to external documents with plain text%
-        }
-    \AtBeginDocument{%
+\def\@load@xr@or@xr@hyper@error@message@text{%
+    Please do not use the 'xr' or 'xr-hyper' package.^^J%
+    External references are not supported in our workflow.^^J%
+    Replace all references to external documents with plain text%
+    }
+\AtBeginDocument{%
+    \if@load@xr@or@xr@hyper
         \@ifpackageloaded{xr}%
             {%
                 \@latex@error{%
@@ -5560,8 +5594,8 @@
                     }{}%
             }%
             {}%
-        }
-\fi
+    \fi
+    }
 %
 \if@author@sep@by@number
     \AtBeginDocument{%
